@@ -63,7 +63,7 @@ class NeuralNetworks():
                 # 损失函数的求导
                 dL_dyPred = -2 * (yTrue - yPred)
 
-                # 神经元o1
+                # 神经元o1，链式法则求偏导
                 dyPred_dw5 = h1 * dSigmoid(sum_o1)
                 dyPred_dw6 = h2 * dSigmoid(sum_o1)
                 dyPred_db3 = dSigmoid(sum_o1)
@@ -71,34 +71,34 @@ class NeuralNetworks():
                 dyPred_dh1 = self.w5 * dSigmoid(sum_o1)
                 dyPred_dh2 = self.w6 * dSigmoid(sum_o1)
 
-                # 神经元h1
+                # 神经元h1，链式法则求偏导
                 dh1_dw1 = x[0] * dSigmoid(sum_h1)
                 dh1_dw2 = x[1] * dSigmoid(sum_h1)
                 dh1_db1 = dSigmoid(sum_h1)
 
-                # 神经元h2
+                # 神经元h2，链式法则求偏导
                 dh2_dw3 = x[0] * dSigmoid(sum_h2)
                 dh2_dw4 = x[1] * dSigmoid(sum_h2)
                 dh2_db2 = dSigmoid(sum_h2)
 
-                # 神经元o1
+                # 神经元o1，梯度下降
                 self.w5 -= learnRate * dL_dyPred * dyPred_dw5
                 self.w6 -= learnRate * dL_dyPred * dyPred_dw6
                 self.b3 -= learnRate * dL_dyPred * dyPred_db3
 
-                # 神经元h1
+                # 神经元h1，梯度下降
                 self.w1 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_dw1
                 self.w2 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_dw2
                 self.b1 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_db1
 
-                # 神经元h2
+                # 神经元h2，梯度下降
                 self.w3 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_dw3
                 self.w4 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_dw4
                 self.b2 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_db2
 
             if epoch % 100 == 0:
-                yPreds = np.apply_along_axis(self.feedforward, 1, data)
-                loss = loss_MSE(yTrues, yPreds)
+                yPreds = np.apply_along_axis(self.feedforward, 1, data)  # 每行数据计算预测值
+                loss = loss_MSE(yTrues, yPreds)  # 计算损失函数值
                 print("Epoch %d loss: %.3f" % (epoch, loss))
 
 if __name__ == "__main__":

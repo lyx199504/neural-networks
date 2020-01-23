@@ -19,9 +19,9 @@ def networks(x, y):
 
     # 神经网络模型
     model = torch.nn.Sequential(OrderedDict([
-        ("Line1", torch.nn.Linear(input_data, hidden_layer)),  # 输入层至隐藏层的计算
+        ("Line1", torch.nn.Linear(input_data, hidden_layer)),  # 输入层至隐藏层的线性变化
         ("Sigm1", torch.nn.Sigmoid()),  # 激活函数
-        ("Line2", torch.nn.Linear(hidden_layer, output_data)),  # 隐藏层至输出层的计算
+        ("Line2", torch.nn.Linear(hidden_layer, output_data)),  # 隐藏层至输出层的线性变化
         ("Sigm2", torch.nn.Sigmoid()),  # 激活函数
     ]))
 
@@ -29,15 +29,16 @@ def networks(x, y):
     epochs = 2000  # 迭代次数
     loss_fn = torch.nn.MSELoss()  # 损失函数
 
+    optimzer = torch.optim.Adam(model.parameters(), lr=learningRate)  # 优化器
+
     for epoch in range(epochs):
         yPred = model(x)
         loss = loss_fn(yPred, y)
         if epoch % 100 == 0:
-            print("Epoch %d loss: %.3f" % (epoch, loss.data))
-        model.zero_grad()  # 求解梯度前需要清空之前的梯度结果（因为model会累加梯度）
+            print("Epoch %d loss: %.3f" % (epoch, float(loss)))
+        optimzer.zero_grad()  # 求解梯度前需要清空之前的梯度结果（因为model会累加梯度）
         loss.backward()  # 梯度计算
-        for param in model.parameters():
-            param.data -= param.grad.data * learningRate  # 调整参数
+        optimzer.step()
     return model
 
 
