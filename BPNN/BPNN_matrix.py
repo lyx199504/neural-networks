@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time : 2020/1/22 19:07
+# @Time : 2020/1/24 16:34
 # @Author : LYX-夜光
 
 import numpy as np
@@ -38,8 +38,8 @@ class NeuralNetworks():
     def train(self):
         learnRate = 0.5
         epochs = 2000
-        for epoch in range(epochs):
-            for i in range(self.x.shape[0]):
+        for epoch in range(epochs):  # 每一次迭代
+            for i in range(self.x.shape[0]):  # 每一个输入数据
                 # 计算每一层节点
                 x = np.c_[[1], self.x[i, :]]
                 sum_h = x * self.w1  # 输入层至隐藏层的线性变换
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # 测试样例
     Alice = np.array([128, 63])
     gender = network.feedforward(np.mat((Alice - minD) / (maxD - minD)))
-    print("Emily: %f" % gender)
+    print("Alice: %f" % gender)
 
     Frank = np.array([155, 68])
     gender = network.feedforward(np.mat((Frank - minD) / (maxD - minD)))
