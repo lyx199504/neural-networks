@@ -41,25 +41,24 @@ def networks(x, y):
         optimzer.step()  # 优化更新权值
     return model
 
-
 if __name__ == "__main__":
     data = np.array([[133, 65],  # 每一行是体重（磅）和身高（英寸）
                      [160, 72],
                      [152, 70],
                      [120, 60]])
-    maxD, minD = data.max(0), data.min(0)
-    newData = (data - minD) / (maxD - minD)  # 单位化
+    dataMean, dataStd = data.mean(), data.std()
+    newData = (data - dataMean) / dataStd  # 标准化
     yTrues = np.array([[0, 1, 1, 0]]).T  # 1男性 0女性
 
     model = networks(newData, yTrues)
 
     # 测试样例
     Alice = np.array([128, 63])
-    dataAlice = torch.tensor(((Alice - minD) / (maxD - minD))).float()
+    dataAlice = torch.tensor(((Alice - dataMean) / dataStd)).float()
     gender = model.forward(dataAlice)
     print("Alice: %f" % gender)
 
     Frank = np.array([155, 68])
-    dataFrank = torch.tensor(((Frank - minD) / (maxD - minD))).float()
+    dataFrank = torch.tensor(((Frank - dataMean) / dataStd)).float()
     gender = model.forward(dataFrank)
     print("Frank: %f" % gender)

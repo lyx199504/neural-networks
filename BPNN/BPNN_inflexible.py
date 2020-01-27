@@ -98,8 +98,8 @@ if __name__ == "__main__":
                      [160, 72],
                      [152, 70],
                      [120, 60]])
-    maxD, minD = data.max(0), data.min(0)
-    newData = (data - minD) / (maxD - minD)  # 单位化
+    dataMean, dataStd = data.mean(), data.std()
+    newData = (data - dataMean) / dataStd  # 标准化
 
     yTrues = np.array([0, 1, 1, 0])  # 1男性 0女性
     network = NeuralNetworks()
@@ -107,9 +107,9 @@ if __name__ == "__main__":
 
     # 测试样例
     Alice = np.array([128, 63])
-    gender = network.feedforward((Alice - minD) / (maxD - minD))
+    gender = network.feedforward((Alice - dataMean) / dataStd)
     print("Alice: %f" % gender)
 
     Frank = np.array([155, 68])
-    gender = network.feedforward((Frank - minD) / (maxD - minD))
+    gender = network.feedforward((Frank - dataMean) / dataStd)
     print("Frank: %f" % gender)
