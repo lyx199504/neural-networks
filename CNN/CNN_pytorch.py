@@ -11,37 +11,35 @@ class CNN(torch.nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
         self.layer1 = torch.nn.Sequential(
-            torch.nn.Conv2d(1, 16, kernel_size=3),  # 将1张28*28的图像卷积成16个26*26的图像
-            torch.nn.BatchNorm2d(16),  # 标准化（下同）
-            torch.nn.ReLU(inplace=True)  # 将小于0的值变为0（下同）
+            torch.nn.Conv2d(1, 8, kernel_size=3),  # 将1张28*28的图像卷积成8个26*26的图像
+            torch.nn.BatchNorm2d(8),  # 标准化（下同）
+            torch.nn.ReLU(inplace=True),  # 将小于0的值变为0（下同）
         )
 
         self.layer2 = torch.nn.Sequential(
-            torch.nn.Conv2d(16, 32, kernel_size=3),  # 将16张26*26的图像卷积成32个24*24的图像
-            torch.nn.BatchNorm2d(32),
+            torch.nn.Conv2d(8, 16, kernel_size=3),  # 将8张26*26的图像卷积成16个24*24的图像
+            torch.nn.BatchNorm2d(16),
             torch.nn.ReLU(inplace=True),
             torch.nn.MaxPool2d(kernel_size=2, stride=2)  # 将24*24的图像池化成12*12的图像
         )
 
         self.layer3 = torch.nn.Sequential(
-            torch.nn.Conv2d(32, 64, kernel_size=3),  # 将32张12*12的图像卷积成64个10*10的图像
-            torch.nn.BatchNorm2d(64),
-            torch.nn.ReLU(inplace=True)
+            torch.nn.Conv2d(16, 24, kernel_size=3),  # 将16张12*12的图像卷积成24个10*10的图像
+            torch.nn.BatchNorm2d(24),
+            torch.nn.ReLU(inplace=True),
         )
 
         self.layer4 = torch.nn.Sequential(
-            torch.nn.Conv2d(64, 128, kernel_size=3),  # 将64张10*10的图像卷积成128个8*8的图像
-            torch.nn.BatchNorm2d(128),
+            torch.nn.Conv2d(24, 32, kernel_size=3),  # 将24张10*10的图像卷积成32个8*8的图像
+            torch.nn.BatchNorm2d(32),
             torch.nn.ReLU(inplace=True),
             torch.nn.MaxPool2d(kernel_size=2, stride=2)  # 将8*8的图像池化成4*4的图像
         )
 
         self.function = torch.nn.Sequential(  # 全连接层
-            torch.nn.Linear(128 * 4 * 4, 1024),  # 输入层-隐藏层1
+            torch.nn.Linear(32 * 4 * 4, 128),  # 输入层-隐藏层
             torch.nn.ReLU(inplace=True),
-            torch.nn.Linear(1024, 128),  # 隐藏层1-隐藏层2
-            torch.nn.ReLU(inplace=True),
-            torch.nn.Linear(128, 10)  # 隐藏层2-输出层，输出10个分类
+            torch.nn.Linear(128, 10)  # 隐藏层-输出层，输出10个分类
         )
 
     def forward(self, x):
