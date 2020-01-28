@@ -36,7 +36,7 @@ class NeuralNetworks():
         return o
 
     def train(self, actiFunc=sigmoid, dActiFunc=dSigmoid):
-        learnRate = 0.5
+        learningRate = 0.5
         epochs = 2000
         for epoch in range(epochs):  # 每一次迭代
             for i in range(self.x.shape[0]):  # 每一个输入数据
@@ -59,8 +59,8 @@ class NeuralNetworks():
                 dh_dw1 = x.T * dActiFunc(sum_h)
 
                 # 梯度下降
-                self.w2 -= np.mat(learnRate * dL_do.A * do_dw2.A)
-                self.w1 -= np.mat(learnRate * dL_do.A * do_dh.A * dh_dw1.A)
+                self.w2 -= np.mat(learningRate * dL_do.A * do_dw2.A)
+                self.w1 -= np.mat(learningRate * dL_do.A * do_dh.A * dh_dw1.A)
 
             if epoch % 100 == 0:
                 yPreds = self.feedforward(self.x)  # 每行数据计算预测值

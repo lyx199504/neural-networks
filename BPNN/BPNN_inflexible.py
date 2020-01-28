@@ -38,7 +38,7 @@ class NeuralNetworks():
         return o1
 
     def train(self, data, yTrues):
-        learnRate = 0.5
+        learningRate = 0.5
         epochs = 2000
         for epoch in range(epochs):  # 每一次迭代
             for x, yTrue in zip(data, yTrues):  # 每一个输入数据
@@ -73,19 +73,19 @@ class NeuralNetworks():
                 dh2_db2 = dSigmoid(sum_h2)
 
                 # 神经元o1，梯度下降
-                self.w5 -= learnRate * dL_dyPred * dyPred_dw5
-                self.w6 -= learnRate * dL_dyPred * dyPred_dw6
-                self.b3 -= learnRate * dL_dyPred * dyPred_db3
+                self.w5 -= learningRate * dL_dyPred * dyPred_dw5
+                self.w6 -= learningRate * dL_dyPred * dyPred_dw6
+                self.b3 -= learningRate * dL_dyPred * dyPred_db3
 
                 # 神经元h1，梯度下降
-                self.w1 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_dw1
-                self.w2 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_dw2
-                self.b1 -= learnRate * dL_dyPred * dyPred_dh1 * dh1_db1
+                self.w1 -= learningRate * dL_dyPred * dyPred_dh1 * dh1_dw1
+                self.w2 -= learningRate * dL_dyPred * dyPred_dh1 * dh1_dw2
+                self.b1 -= learningRate * dL_dyPred * dyPred_dh1 * dh1_db1
 
                 # 神经元h2，梯度下降
-                self.w3 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_dw3
-                self.w4 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_dw4
-                self.b2 -= learnRate * dL_dyPred * dyPred_dh2 * dh2_db2
+                self.w3 -= learningRate * dL_dyPred * dyPred_dh2 * dh2_dw3
+                self.w4 -= learningRate * dL_dyPred * dyPred_dh2 * dh2_dw4
+                self.b2 -= learningRate * dL_dyPred * dyPred_dh2 * dh2_db2
 
             if epoch % 100 == 0:
                 yPreds = np.apply_along_axis(self.feedforward, 1, data)  # 每行数据计算预测值

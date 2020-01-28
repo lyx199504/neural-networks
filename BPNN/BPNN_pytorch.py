@@ -29,16 +29,16 @@ def networks(x, y):
     epochs = 2000  # 迭代次数
     loss_fn = torch.nn.MSELoss()  # 损失函数
 
-    optimzer = torch.optim.Adam(model.parameters(), lr=learningRate)  # 优化器
+    optimizer = torch.optim.Adam(model.parameters(), lr=learningRate)  # 优化器
 
     for epoch in range(epochs):  # 每一次迭代
         yPred = model(x)
         loss = loss_fn(yPred, y)
         if epoch % 100 == 0:
             print("Epoch %d loss: %.3f" % (epoch, float(loss)))
-        optimzer.zero_grad()  # 求解梯度前需要清空之前的梯度结果（因为model会累加梯度）
+        optimizer.zero_grad()  # 求解梯度前需要清空之前的梯度结果（因为model会累加梯度）
         loss.backward()  # 梯度计算
-        optimzer.step()  # 优化更新权值
+        optimizer.step()  # 优化更新权值
     return model
 
 if __name__ == "__main__":
