@@ -29,7 +29,7 @@ def networks(x, y):
     epochs = 2000  # 迭代次数
     loss_fn = torch.nn.MSELoss()  # 损失函数
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learningRate)  # 优化器
+    optimizer = torch.optim.SGD(model.parameters(), lr=learningRate)  # 优化器
 
     for epoch in range(epochs):  # 每一次迭代
         yPred = model(x)
