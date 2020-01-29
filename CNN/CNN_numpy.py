@@ -4,25 +4,23 @@
 # @Author : LYX-夜光
 
 import numpy as np
-import sys
-
 from skimage import data, color, io
 
 # 卷积层
 def conv(img, convFilter):
     if len(img.shape) != len(convFilter.shape) - 1:
         print("图片和过滤器维度不匹配！")
-        sys.exit()
+        exit()
     if len(img.shape) > 2 or len(convFilter.shape) > 3:
         if img.shape[-1] != convFilter.shape[-1]:
             print("彩色图片和过滤器的通道数不一致！")
-            sys.exit()
+            exit()
     if convFilter.shape[1] != convFilter.shape[2]:
         print("过滤器必须是方阵！")
-        sys.exit()
+        exit()
     if convFilter.shape[1] % 2 == 0:
         print("过滤器方阵必须是奇数方阵！")
-        sys.exit()
+        exit()
     # 卷积结果
     featureMaps = np.zeros((img.shape[0] - convFilter.shape[1] + 1,
                             img.shape[1] - convFilter.shape[2] + 1,
@@ -51,18 +49,28 @@ def cal_conv(img, curFilter):
     return convResult
 
 # 线性整流函数
-def relu(featureMaps):
-    reluResults = np.zeros(featureMaps.shape)
-    for mapNum in range(featureMaps.shape[-1]):
-        for r in range(featureMaps.shape[0]):
-            for c in range(featureMaps.shape[1]):
-                reluResults[r, c, mapNum] = np.max(featureMaps[r, c, mapNum], 0)
-    return reluResults
+def relu(x):
+    if type(x) in [np.ndarray, np.matrix]:
+        x = x.copy()
+        x[x < 0] = 0.0
+    else:
+        x = np.max((x, 0.0))
+    return x
+
+# 线性整流函数的导数
+def dRelu(x):
+    if type(x) in [np.ndarray, np.matrix]:
+        x = x.copy()
+        x[x > 0] = 1.0
+        x[x < 0] = 0.0
+    else:
+        x = 1.0 if x > 0 else 0.0
+    return x
 
 # 池化层
 def pooling(featureMaps, size=2, stride=2):
-    poolResults = np.zeros((np.int(np.ceil((featureMaps.shape[0] - size)/stride + 1)),
-                            np.int(np.ceil((featureMaps.shape[1] - size)/stride + 1)),
+    poolResults = np.zeros((np.int((featureMaps.shape[0] - size)/stride + 1),
+                            np.int((featureMaps.shape[1] - size)/stride + 1),
                             featureMaps.shape[-1]))
     for mapNum in range(featureMaps.shape[-1]):
         for r in range(poolResults.shape[0]):
@@ -92,6 +100,6 @@ if __name__ == "__main__":
     reluResults3 = relu(featureMaps3)
     poolResults3 = pooling(reluResults3)
 
-    img = poolResults1[:, :, 0]
+    img = poolResults3[:, :, 0]
     io.imshow(img)
     io.show()
