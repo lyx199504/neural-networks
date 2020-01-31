@@ -13,9 +13,14 @@ def sigmoid(x):
 def dSigmoid(x):
     return sigmoid(x) * (1 - sigmoid(x))
 
-# 均方误差
-def loss_MSE(yTrue, yPred):
+# 损失函数
+def loss_func(yTrue, yPred):
     return ((yTrue - yPred) ** 2).mean()
+
+# 损失函数的导数
+def dLoss_func(yTrue, yPred):
+    # 损失函数改为：- (yTrue*np.log(yPred) + (1-yTrue)*np.log(1 - yPred))
+    return - yTrue/yPred + (1 - yTrue)/(1 - yPred)
 
 # 神经网络
 class NeuralNetworks():
@@ -51,7 +56,7 @@ class NeuralNetworks():
                 yPred = o1  # 输出数据
 
                 # 损失函数的求导
-                dL_dyPred = -2 * (yTrue - yPred)
+                dL_dyPred = dLoss_func(yTrue, yPred)
 
                 # 输出层对隐藏层做链式法则求偏导
                 dyPred_dw5 = h1 * dSigmoid(sum_o1)
@@ -89,7 +94,7 @@ class NeuralNetworks():
 
             if epoch % 100 == 0:
                 yPreds = np.apply_along_axis(self.feedforward, 1, data)  # 每行数据计算预测值
-                loss = loss_MSE(yTrues, yPreds)  # 计算损失函数值
+                loss = loss_func(yTrues, yPreds)  # 计算损失函数值
                 print("Epoch %d loss: %.3f" % (epoch, loss))
 
 
