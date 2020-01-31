@@ -51,7 +51,7 @@ class CNN(torch.nn.Module):
         x = self.function(x)
         return x
 
-def train(datas):
+def train(datas, learning_rate):
     model = CNN()
     if torch.cuda.is_available():
         model = model.cuda()
@@ -86,8 +86,6 @@ def test(model, datas):
     return correctNum
 
 if __name__ == "__main__":
-    batch_size = 64
-    learning_rate = 0.02
     # transforms.ToTensor初始化数据为张量，并将数据归一化为区间为[0,1]的数值
     # transforms.Normalize数据标准化，即(数据-均值)/(标准差)，第一个参数为比均值，第二个参数为标准差
     # transforms.Compose将上面两个过程整合在一起
@@ -95,9 +93,10 @@ if __name__ == "__main__":
     train_dataSet = datasets.MNIST("./data", train=True, transform=transform)
     test_dataSet = datasets.MNIST("./data", train=False, transform=transform)
     # 将数据分成train_loader组，每组batch_size个数据
+    batch_size = 64
     train_loader = DataLoader(train_dataSet, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataSet, batch_size=batch_size, shuffle=False)
 
-    model = train(train_loader)
+    model = train(train_loader, 0.02)
     correctNum = test(model, test_loader)
     print("Test correct rate: %.3f" % (correctNum / len(test_dataSet)))
