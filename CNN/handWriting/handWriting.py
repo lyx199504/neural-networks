@@ -6,6 +6,7 @@
 import torch
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader
+import os
 
 class CNN(torch.nn.Module):
     def __init__(self):
@@ -96,6 +97,11 @@ if __name__ == "__main__":
     batch_size = 64
     train_loader = DataLoader(train_dataSet, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataSet, batch_size=batch_size, shuffle=False)
-    model = train(train_loader, 0.02)
+    path = "model"
+    if os.path.exists(path):
+        model = torch.load(path)
+    else:
+        model = train(train_loader, 0.02)
+        torch.save(model, path)
     correctNum = test(model, test_loader)
     print("Test correct rate: %.3f" % (correctNum / len(test_dataSet)))
