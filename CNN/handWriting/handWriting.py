@@ -97,7 +97,7 @@ if __name__ == "__main__":
     batch_size = 64
     train_loader = DataLoader(train_dataSet, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataSet, batch_size=batch_size, shuffle=False)
-    path = "model"
+    path = "model,pth"
     if os.path.exists(path):
         model = torch.load(path)
     else:
