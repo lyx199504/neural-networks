@@ -11,16 +11,16 @@ class CNN(torch.nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
         self.layer1 = torch.nn.Sequential(
-            torch.nn.Conv2d(1, 8, kernel_size=3),  # 将1张28*28的图像卷积成8个26*26的图像
+            torch.nn.Conv2d(1, 8, kernel_size=3),  # 卷积，将1张28*28的图像卷积成8个26*26的图像
             torch.nn.BatchNorm2d(8),  # 标准化（下同）
-            torch.nn.ReLU(inplace=True),  # 将小于0的值变为0（下同）
+            torch.nn.ReLU(inplace=True),  # 激活函数，将小于0的值变为0（下同）
         )
 
         self.layer2 = torch.nn.Sequential(
             torch.nn.Conv2d(8, 16, kernel_size=3),  # 将8张26*26的图像卷积成16个24*24的图像
             torch.nn.BatchNorm2d(16),
             torch.nn.ReLU(inplace=True),
-            torch.nn.MaxPool2d(kernel_size=2, stride=2)  # 将24*24的图像池化成12*12的图像
+            torch.nn.MaxPool2d(kernel_size=2, stride=2)  # 最大池化，将24*24的图像池化成12*12的图像
         )
 
         self.layer3 = torch.nn.Sequential(
@@ -96,7 +96,6 @@ if __name__ == "__main__":
     batch_size = 64
     train_loader = DataLoader(train_dataSet, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataSet, batch_size=batch_size, shuffle=False)
-
     model = train(train_loader, 0.02)
     correctNum = test(model, test_loader)
     print("Test correct rate: %.3f" % (correctNum / len(test_dataSet)))
