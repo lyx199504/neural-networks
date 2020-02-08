@@ -52,18 +52,14 @@ class CNN(torch.nn.Module):
         x = self.function(x)
         return x
 
-def train(datas, learning_rate):
-    model = CNN()
-    if torch.cuda.is_available():
-        model = model.cuda()
+def train(datas, learning_rate, device):
+    model = CNN().to(device)
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
     epoch = 0
     for data in datas:
-        img, label = data
-        if torch.cuda.is_available():
-            img, label = img.cuda(), label.cuda()
+        img, label = data[0].to(device), data[1].to(device)
         out = model(img)
         loss = loss_fn(out, label)
         epoch += 1
@@ -74,19 +70,18 @@ def train(datas, learning_rate):
         optimizer.step()  # 优化更新权值
     return model
 
-def test(model, datas):
+def test(model, datas, device):
     model.eval()  # 使model不再改变权值
     correctNum = 0.0
     for data in datas:
-        img, label = data
-        if torch.cuda.is_available():
-            img, label = img.cuda(), label.cuda()
+        img, label = data[0].to(device), data[1].to(device)
         out = model(img)
         _, pred = torch.max(out, 1)  # 获得10个分类中最大值的下标，下标为预测值
         correctNum += (pred == label).sum().item()
     return correctNum
 
 if __name__ == "__main__":
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # 在GPU或CPU运行
     # transforms.ToTensor初始化数据为张量，并将数据归一化为区间为[0,1]的数值
     # transforms.Normalize数据标准化，即(数据-均值)/(标准差)，第一个参数为比均值，第二个参数为标准差
     # transforms.Compose将上面两个过程整合在一起
@@ -98,10 +93,10 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_dataSet, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataSet, batch_size=batch_size, shuffle=False)
     path = "model.pth"
-    if os.path.exists(path):
-        model = torch.load(path)
-    else:
-        model = train(train_loader, 0.02)
+    if os.path.exists(path):  # 模型存在则加载模型
+        model = torch.load(path).to(device)
+    else:  # 不存在则训练模型
+        model = train(train_loader, 0.02, device=device)
         torch.save(model, path)
-    correctNum = test(model, test_loader)
+    correctNum = test(model, test_loader, device=device)
     print("Test correct rate: %.3f" % (correctNum / len(test_dataSet)))
