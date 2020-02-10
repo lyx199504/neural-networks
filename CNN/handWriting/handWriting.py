@@ -74,8 +74,8 @@ def test(model, datas, device):
     model.eval()  # 使model不再改变权值
     correctNum = 0.0
     for data in datas:
-        img, label = data[0].to(device), data[1].to(device)
-        out = model(img)
+        img, label = data[0].to(device), data[1]
+        out = model(img).cpu()
         _, pred = torch.max(out, 1)  # 获得10个分类中最大值的下标，下标为预测值
         correctNum += (pred == label).sum().item()
     return correctNum
