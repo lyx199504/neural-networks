@@ -9,7 +9,7 @@ import torchvision
 from CNN.faceRecognition import getFaceDatas
 
 # 训练
-def train(model, datas, device, learning_rate=0.0005):
+def train(model, datas, device, learning_rate=0.0002):
     model.train()  # 训练模式开启
     triple_loss_fn = torch.nn.TripletMarginLoss(margin=2.0, p=2)
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
@@ -28,6 +28,7 @@ def train(model, datas, device, learning_rate=0.0005):
 if __name__ == "__main__":
     '''
     设备有限，只让模型认识 Alejandro_Toledo 这个人，即模型只能识别 Alejandro_Toledo 的人脸
+    训练了很多次，结果都不太好，保留了第10个模型
     '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dir = "./model"
@@ -43,7 +44,7 @@ if __name__ == "__main__":
         model = torch.load(model_in).to(device)
     else:  # 模型不存在，则选择预训练模型
         model = torchvision.models.resnet18(pretrained=True).to(device)
-        model.fc = torch.nn.Softmax(1)
+        model.fc = torch.nn.Softmax(1)  # 最后一层加个softmax激活函数
     print("开始加载数据。。。")
     train_loader = getFaceDatas.getTrainDataSet(model, device)
     print("开始训练模型。。。")
