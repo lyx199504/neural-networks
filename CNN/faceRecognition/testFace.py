@@ -39,7 +39,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dir = "./model"
     try:
-        fileName = sorted(os.listdir(dir), reverse=True)[6]
+        fileName = sorted(os.listdir(dir), reverse=True)[0]
         model_path = dir + '/' + fileName
         print("加载模型：", model_path)
         model = torch.load(model_path).to(device)
