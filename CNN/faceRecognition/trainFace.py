@@ -27,8 +27,7 @@ def train(model, datas, device, learning_rate=0.0002):
 
 if __name__ == "__main__":
     '''
-    设备有限，只让模型认识 Alejandro_Toledo 这个人，即模型只能识别 Alejandro_Toledo 的人脸
-    训练了很多次，结果都不太好，保留了第10个模型
+    这个是假的人脸识别，因为没有加入人脸检测，所以特征的选取都是错的，只是随便用一个预训练模型来跑
     '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dir = "./model"

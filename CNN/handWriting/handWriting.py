@@ -48,7 +48,7 @@ class CNN(torch.nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        x = x.view(x.size(0), -1)  # 将128*4*4的图像平铺成一维
+        x = x.view(x.size(0), -1)  # 将32*4*4的图像平铺成一维
         x = self.function(x)
         return x
 
