@@ -5,13 +5,12 @@
 
 import os
 import torch
-import torchvision
-from CNN.faceRecognition import getFaceDatas
+from CNN.faceRecognition import getFaceDatas, faceNet
 
 # 训练
 def train(model, datas, device, learning_rate=0.0002):
     model.train()  # 训练模式开启
-    triple_loss_fn = torch.nn.TripletMarginLoss(margin=2.0, p=2)
+    triple_loss_fn = torch.nn.TripletMarginLoss(margin=20.0, p=2)
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
 
     for i, data in enumerate(datas, 0):
@@ -27,7 +26,7 @@ def train(model, datas, device, learning_rate=0.0002):
 
 if __name__ == "__main__":
     '''
-    这个是假的人脸识别，因为没有加入人脸检测，所以特征的选取都是错的，只是随便用一个预训练模型来跑
+    使用facenet模型训练，想再训练的话可以运行该文件，由于设备比较差，就只让代码识别第一个人
     '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dir = "./model"
@@ -42,10 +41,13 @@ if __name__ == "__main__":
     if model_in:  # 模型存在，则加载模型
         model = torch.load(model_in).to(device)
     else:  # 模型不存在，则选择预训练模型
-        model = torchvision.models.resnet18(pretrained=True).to(device)
-        model.fc = torch.nn.Softmax(1)  # 最后一层加个softmax激活函数
+        model = faceNet.FaceNet().to(device)
     print("开始加载数据。。。")
     train_loader = getFaceDatas.getTrainDataSet(model, device)
     print("开始训练模型。。。")
     model = train(model, train_loader, device).cpu()
+    try:
+        os.mkdir(dir)
+    except:
+        pass
     torch.save(model, model_out)

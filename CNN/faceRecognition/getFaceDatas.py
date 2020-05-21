@@ -16,7 +16,7 @@ class FaceDataset(Dataset):
         self.transform = transform
         if not self.transform:
             self.transform = transforms.Compose([  # 初始化图像
-                transforms.CenterCrop(224),  # 将图像中心裁剪为224*224
+                # transforms.CenterCrop(224),  # 将图像中心裁剪为224*224
                 transforms.ToTensor(),  # 将图像转化为张量并且归一化
                 transforms.Normalize([.5], [.5]),  # 将张量标准化
             ])
@@ -38,6 +38,7 @@ def getTrainDataSet(model, device, batch_size=10, transform=None, numPerLabel=20
     rawDataset = FaceDataset('./data/train', transform=transform, numPerLabel=numPerLabel)
     # 选择三元组数据
     image = torch.tensor([rawDataset[0][0].tolist()]).to(device)
+    model.eval()
     with torch.no_grad():
         anchor = model(image).cpu()  # anchor图像向量
     # 创建三元hard数据集

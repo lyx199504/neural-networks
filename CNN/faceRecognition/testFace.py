@@ -5,8 +5,7 @@
 
 import os
 import torch
-import torchvision
-from CNN.faceRecognition import getFaceDatas
+from CNN.faceRecognition import getFaceDatas, faceNet
 
 # 测试
 def test(model, datas, anchor, device):
@@ -15,7 +14,7 @@ def test(model, datas, anchor, device):
     with torch.no_grad():
         anchor = model(image).cpu()
     TP, TN, FP, FN = 0.0, 0.0, 0.0, 0.0
-    divide = 0.215  # 观察结果后选择的一个划分值
+    divide = 10.0  # 观察结果后选择的一个划分值
     for data in datas:
         image = data[0].to(device)
         with torch.no_grad():
@@ -36,6 +35,9 @@ def test(model, datas, anchor, device):
     print("查全率：%.6f" % (TP / (TP + FN)))
 
 if __name__ == "__main__":
+    '''
+    测试集，结果还行，准确率和查准率高，但是查全率较低，比较严格
+    '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dir = "./model"
     try:
@@ -44,9 +46,8 @@ if __name__ == "__main__":
         print("加载模型：", model_path)
         model = torch.load(model_path).to(device)
     except:
-        print("模型不存在，使用初始模型：resnet18")
-        model = torchvision.models.resnet18(pretrained=True).to(device)
-        model.fc = torch.nn.Softmax(1)
+        print("模型不存在，使用初始模型：facenet")
+        model = faceNet.FaceNet().to(device)
     print("开始测试数据。。。")
     test_loader, anchors = getFaceDatas.getTestDataSet(1)
     test(model, test_loader, anchors, device)
